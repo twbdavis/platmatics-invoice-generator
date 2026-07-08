@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "WlA/XThI8Wg=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\ThomasDavis\\Desktop\\Projects\\Platmatics_Invoice\\PlatmaticsInvoice\\PlatmaticsInvoice.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\ThomasDavis\\.nuget\\packages\\questpdf\\2026.7.0\\questpdf.2026.7.0.nupkg.sha512",
+    "C:\\Users\\ThomasDavis\\.nuget\\packages\\microsoft.netcore.app.ref\\8.0.27\\microsoft.netcore.app.ref.8.0.27.nupkg.sha512",
+    "C:\\Users\\ThomasDavis\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\8.0.27\\microsoft.windowsdesktop.app.ref.8.0.27.nupkg.sha512",
+    "C:\\Users\\ThomasDavis\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\8.0.27\\microsoft.aspnetcore.app.ref.8.0.27.nupkg.sha512",
+    "C:\\Users\\ThomasDavis\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\8.0.27\\microsoft.netcore.app.host.win-x64.8.0.27.nupkg.sha512"
+  ],
+  "logs": []
+}

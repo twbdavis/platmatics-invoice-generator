@@ -1,0 +1,30 @@
+{
+  "invoiceNumber": "PLT-2026-0001",
+  "invoiceDate": "2026-07-08",
+  "status": "Payment due",
+  "billTo": {
+    "name": "Crowned Royalty Hair Institute",
+    "addressLine1": "401 N Main St, Suite 111",
+    "addressLine2": "Bryan, TX 77803",
+    "email": "info@crownedroyaltyhairinstitute.net"
+  },
+  "issuedBy": {
+    "name": "Platmatics",
+    "addressLine1": "College Station, TX",
+    "addressLine2": "",
+    "email": "twbdavis@gmail.com"
+  },
+  "items": [
+    {
+      "description": "Platform Development - Phase 1 (Website + Booking System)",
+      "quantity": 1,
+      "unitPrice": 1000.00
+    },
+    {
+      "description": "Monthly Platform Maintenance - July 2026",
+      "quantity": 1,
+      "unitPrice": 55.00
+    }
+  ],
+  "notes": null
+}
