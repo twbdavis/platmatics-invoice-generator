@@ -229,7 +229,7 @@ public class InvoiceDocument : IDocument
         {
             column.Item().LineHorizontal(1).LineColor(Border);
             column.Item().PaddingTop(8).AlignCenter()
-                .Text("Please remit payment to Platmatics and reference the invoice number above.")
+                .Text($"Please remit payment to {_invoice.IssuedBy.Name} and reference the invoice number above.")
                 .FontSize(8)
                 .FontColor(MutedText);
         });

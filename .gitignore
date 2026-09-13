@@ -1,0 +1,7 @@
+# Local build products and private data
+**/bin/
+**/obj/
+*.user
+artifacts/
+TestResults/
+**/Output/

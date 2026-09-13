@@ -264,37 +264,33 @@ public class MainForm : Form
         }
     }
 
+    private static bool IsBlankRow(DataGridViewRow row)
+        => string.IsNullOrWhiteSpace(row.Cells["Description"].Value?.ToString())
+            && string.IsNullOrWhiteSpace(row.Cells["Qty"].Value?.ToString())
+            && string.IsNullOrWhiteSpace(row.Cells["UnitPrice"].Value?.ToString());
+
     private void RecalculateAmounts()
     {
         var total = 0m;
-
+        var valid = true;
         foreach (DataGridViewRow row in _items.Rows)
         {
-            if (row.IsNewRow)
+            if (row.IsNewRow) continue;
+            row.ErrorText = string.Empty;
+            if (IsBlankRow(row)) { row.Cells["Amount"].Value = string.Empty; continue; }
+            if (!InvoiceInput.TryReadItem(row.Cells["Description"].Value?.ToString(),
+                row.Cells["Qty"].Value?.ToString(), row.Cells["UnitPrice"].Value?.ToString(), out var item, out var error))
+            {
+                row.ErrorText = error;
+                row.Cells["Amount"].Value = "Check input";
+                valid = false;
                 continue;
-
-            var qty = ParseInt(row.Cells["Qty"].Value);
-            var price = ParseDecimal(row.Cells["UnitPrice"].Value);
-            var amount = qty * price;
-            total += amount;
-
-            row.Cells["Amount"].Value = amount.ToString("C2", Usd);
+            }
+            try { total = checked(total + item!.Amount); }
+            catch (OverflowException) { valid = false; row.ErrorText = "Invoice total is too large."; }
+            row.Cells["Amount"].Value = item!.Amount.ToString("C2", Usd);
         }
-
-        _totalLabel.Text = $"Amount Due: {total.ToString("C2", Usd)}";
-    }
-
-    private static int ParseInt(object? value)
-    {
-        if (value is null) return 0;
-        return int.TryParse(value.ToString(), NumberStyles.Integer | NumberStyles.AllowThousands, Usd, out var result) ? result : 0;
-    }
-
-    private static decimal ParseDecimal(object? value)
-    {
-        if (value is null) return 0m;
-        var text = value.ToString()?.Replace("$", "").Trim() ?? string.Empty;
-        return decimal.TryParse(text, NumberStyles.Number, Usd, out var result) ? result : 0m;
+        _totalLabel.Text = valid ? $"Amount Due: {total.ToString("C2", Usd)}" : "Correct highlighted line items";
     }
 
     private Invoice? CollectInvoice(out string? validationError)
@@ -324,30 +320,19 @@ public class MainForm : Form
             },
         };
 
+        var total = 0m;
         foreach (DataGridViewRow row in _items.Rows)
         {
-            if (row.IsNewRow)
-                continue;
-
-            var description = row.Cells["Description"].Value?.ToString()?.Trim() ?? string.Empty;
-            var qty = ParseInt(row.Cells["Qty"].Value);
-            var price = ParseDecimal(row.Cells["UnitPrice"].Value);
-
-            if (description.Length == 0 && qty == 0 && price == 0m)
-                continue;
-
-            if (description.Length == 0)
+            if (row.IsNewRow || IsBlankRow(row)) continue;
+            if (!InvoiceInput.TryReadItem(row.Cells["Description"].Value?.ToString(),
+                row.Cells["Qty"].Value?.ToString(), row.Cells["UnitPrice"].Value?.ToString(), out var item, out var error))
             {
-                validationError = "Every line item needs a description.";
+                validationError = $"Line {row.Index + 1}: {error}";
                 return null;
             }
-
-            invoice.Items.Add(new InvoiceItem
-            {
-                Description = description,
-                Quantity = qty == 0 ? 1 : qty,
-                UnitPrice = price,
-            });
+            try { total = checked(total + item!.Amount); }
+            catch (OverflowException) { validationError = "Invoice total is too large."; return null; }
+            invoice.Items.Add(item!);
         }
 
         if (invoice.InvoiceNumber.Length == 0 || invoice.InvoiceNumber.EndsWith('-'))
